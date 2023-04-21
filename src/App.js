@@ -22,7 +22,8 @@ function App() {
           }} placeholder="🖊️ Add item..." />
         <i onClick={()=>{
           setTodos([...todos, {id: Date.now(), text: todo, status: false}]);
-        }} className="fas fa-plus"></i>
+        }} 
+        className="fas fa-plus"></i>
       </div>
       {/* checkbox checking && redering the todo`s */}
       <div className="todos">
@@ -41,9 +42,6 @@ function App() {
                   }} checked={obj.status} />
                   <p>{obj.text}</p>
                 </div>
-                <div className="right">
-                  <i className="fas fa-times"></i>
-                </div>
               </div>
             )
           })
@@ -59,9 +57,6 @@ function App() {
                     <div className="left">
                       <br />
                       <p>{obj.text}</p>
-                    </div>
-                    <div className="right">
-                      <i className="fas fa-times"></i>
                     </div>
                   </div>
                 ))
