@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 function App() {
   let [todos, setTodos] = useState([]);
   let [todo, setTodo] = useState('');
+
+  const checkedTodos = todos.filter((obj) => obj.status);
+
   return (
     <div className="app">
       <div className="mainHeading">
@@ -21,6 +24,7 @@ function App() {
           setTodos([...todos, {id: Date.now(), text: todo, status: false}]);
         }} className="fas fa-plus"></i>
       </div>
+      {/* checkbox checking && redering the todo`s */}
       <div className="todos">
         {
           todos.map((obj)=>{
@@ -28,13 +32,13 @@ function App() {
               <div className="todo">
                 <div className="left">
                   <input type="checkbox" onChange={(e)=>{
-                    setTodos(todos.filter(Todo=>{
+                    setTodos(todos.map(Todo=>{
                       if(obj.id===Todo.id){
                         Todo.status=e.target.checked;
                       }
                       return Todo;
                     }));
-                  }} value={obj.status} />
+                  }} checked={obj.status} />
                   <p>{obj.text}</p>
                 </div>
                 <div className="right">
@@ -44,26 +48,30 @@ function App() {
             )
           })
         }
-        <div style={{marginTop: '40px'}}>
-          <h1>checked Todo`s</h1>
-        </div>
+        {/* rendering the checked todo`s */}
         {
-          todos.map((obj)=>{
-            if(obj.status){
-              return(
-                <div className="todo">
-                  <div className="left">
-                    <br/>
-                    <p>{obj.text}</p>
+          checkedTodos.length > 0 ? (
+            <div style={{marginTop: '40px'}}>
+              <h1>Checked Todo's</h1>
+              {
+                checkedTodos.map((obj) => (
+                  <div className="todo">
+                    <div className="left">
+                      <br />
+                      <p>{obj.text}</p>
+                    </div>
+                    <div className="right">
+                      <i className="fas fa-times"></i>
+                    </div>
                   </div>
-                  <div className="right">
-                    <i className="fas fa-times"></i>
-                  </div>
-                </div>
-              )
-            }
-            return null;
-          })
+                ))
+              }
+            </div>
+          ) : (
+            <div style={{marginTop: '40px'}}>
+              <h1>No Checked Todo's</h1>
+            </div>
+          )
         }
       </div>
     </div>
