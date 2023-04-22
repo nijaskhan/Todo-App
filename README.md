@@ -1,4 +1,4 @@
-# Todo Web Application with reactJS
+# Todo Web Application with react.js
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
