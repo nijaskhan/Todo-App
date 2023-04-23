@@ -49,7 +49,7 @@ function App() {
         {/* rendering the checked todo`s */}
         {
           checkedTodos.length > 0 ? (
-            <div style={{marginTop: '40px'}}>
+            <div style={{marginTop: '40px', paddingBottom: '10px'}}>
               <h1>Checked Todo's</h1>
               {
                 checkedTodos.map((obj) => (
