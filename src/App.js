@@ -4,8 +4,31 @@ import React, { useState } from 'react';
 function App() {
   let [todos, setTodos] = useState([]);
   let [todo, setTodo] = useState('');
+  let [todoExist, setTodoExist] = useState(false);
+  let [todoValidation, setTodoValidation] = useState(false);
 
   const checkedTodos = todos.filter((obj) => obj.status);
+
+  const handleAddTodo=()=>{
+    const todoExist = todos.some(item => item.text === todo);
+    if(todo.length>1){
+      if(todoExist){
+        setTodoValidation(false);
+        setTodoExist(true);
+      }else{
+        setTodoExist(false);
+        setTodoValidation(false);
+        setTodos([...todos, {id: Date.now(), text: todo, status: false}]);
+      }
+    }else{
+      setTodoExist(false);
+      setTodoValidation("Please enter a Todo message in the field");
+    }
+  }
+  const handleDeleteTodo=(id)=>{
+    const newTodo = todos.filter(obj => obj.id != id);
+    setTodos(newTodo);
+  }
 
   return (
     <div className="app">
@@ -20,31 +43,37 @@ function App() {
         <input type="text" onChange={(e)=>{
           setTodo(e.target.value);
           }} placeholder="🖊️ Add item..." />
-        <i onClick={()=>{
-          setTodos([...todos, {id: Date.now(), text: todo, status: false}]);
-        }} 
+        <i onClick={()=>handleAddTodo()} 
         className="fas fa-plus"></i>
       </div>
+      <p style={{color: 'red', paddingTop: '5px', textAlign: 'center', display: todoExist===false ? 'none' : 'block'}}>Entered todo is already exists</p>
+      <p style={{color: 'red', paddingTop: '5px', textAlign: 'center', display: todoValidation ? 'block' : 'none'}}>{todoValidation}</p>
       {/* checkbox checking && redering the todo`s */}
       <div className="todos">
         {
+          todos.length>=1 ? (
           todos.map((obj)=>{
-            return(
-              <div className="todo">
-                <div className="left">
-                  <input type="checkbox" onChange={(e)=>{
-                    setTodos(todos.map(Todo=>{
-                      if(obj.id===Todo.id){
-                        Todo.status=e.target.checked;
-                      }
-                      return Todo;
-                    }));
-                  }} checked={obj.status} />
-                  <p>{obj.text}</p>
+            if(!obj.status){
+              return(
+                <div className="todo">
+                  <div className="left">
+                    <input type="checkbox" onChange={(e)=>{
+                      setTodos(todos.map(Todo=>{
+                        if(obj.id===Todo.id){
+                          Todo.status=e.target.checked;
+                        }
+                        return Todo;
+                      }));
+                    }} checked={obj.status} />
+                    <p>{obj.text}</p>
+                  </div>
+                  <i className="fa fa-trash" onClick={()=>handleDeleteTodo(obj.id)}></i>
                 </div>
-              </div>
-            )
-          })
+              )
+            }
+          }) ):( 
+            <h2 style={{fontSize: '1rem',paddingTop: '15px', color: 'grey', display: todos.length===0?'block':'none'}}>No Todo`s to show</h2>
+          )
         }
         {/* rendering the checked todo`s */}
         {
@@ -56,8 +85,9 @@ function App() {
                   <div className="todo">
                     <div className="left">
                       <br />
-                      <p>{obj.text}</p>
+                      <p style={{textDecoration: 'line-through'}}>{obj.text}</p>
                     </div>
+                    <i className="fa fa-trash" onClick={()=>handleDeleteTodo(obj.id)}></i>
                   </div>
                 ))
               }
