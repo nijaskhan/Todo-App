@@ -1,16 +1,29 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
-  let [todos, setTodos] = useState([]);
+  let [todos, setTodos] = useState(()=>{
+    const saved = JSON.parse(localStorage.getItem('todos'));
+    return (saved || "");
+  });
   let [todo, setTodo] = useState('');
   let [todoExist, setTodoExist] = useState(false);
   let [todoValidation, setTodoValidation] = useState(false);
+  let checkedTodos;
+  if(todos){
+    checkedTodos = todos.filter((obj) => obj.status);
+  }else{
+    checkedTodos = false;
+  }
 
-  const checkedTodos = todos.filter((obj) => obj.status);
+  useEffect(()=>{
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   const handleAddTodo=()=>{
-    const todoExist = todos.some(item => item.text === todo);
+    let todoExist;
+    if(todoExist) todos.some(item => item.text === todo);
+    else todoExist=false;
     if(todo.length>1){
       if(todoExist){
         setTodoValidation(false);
@@ -26,7 +39,7 @@ function App() {
     }
   }
   const handleDeleteTodo=(id)=>{
-    const newTodo = todos.filter(obj => obj.id != id);
+    const newTodo = todos.filter(obj => obj.id !==id);
     setTodos(newTodo);
   }
 
@@ -39,13 +52,13 @@ function App() {
         <br />
         <h2>Whoop, it's a Sunny Day 🌝 ☕ </h2>
       </div>
-      <div className="input">
-        <input type="text" onChange={(e)=>{
-          setTodo(e.target.value);
-          }} placeholder="🖊️ Add item..." />
-        <i onClick={()=>handleAddTodo()} 
-        className="fas fa-plus"></i>
-      </div>
+        <div className="input">
+          <input type="text" onChange={(e)=>{
+            setTodo(e.target.value);
+            }} placeholder="🖊️ Add item..." />
+          <i onClick={()=>handleAddTodo()} 
+          className="fas fa-plus"></i>
+        </div>
       <p style={{color: 'red', paddingTop: '5px', textAlign: 'center', display: todoExist===false ? 'none' : 'block'}}>Entered todo is already exists</p>
       <p style={{color: 'red', paddingTop: '5px', textAlign: 'center', display: todoValidation ? 'block' : 'none'}}>{todoValidation}</p>
       {/* checkbox checking && redering the todo`s */}
@@ -71,7 +84,8 @@ function App() {
                 </div>
               )
             }
-          }) ):( 
+            return null
+          }) ):(
             <h2 style={{fontSize: '1rem',paddingTop: '15px', color: 'grey', display: todos.length===0?'block':'none'}}>No Todo`s to show</h2>
           )
         }
